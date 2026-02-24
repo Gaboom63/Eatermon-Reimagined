@@ -1,0 +1,241 @@
+#battleMenu {
+    position: absolute;
+    width: 1024px;
+    height: 560px;
+    border: solid black 2px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(255, 255, 255);
+    image-rendering: pixelated;
+    z-index: 1;
+    background-image: url('../Images/Backgrounds/TemporaryBG.png');
+    background-size: cover;
+    /* display: none; */
+}
+
+#attackContainer {
+    position: absolute;
+    display: grid;
+    width: 350px;
+    height: 100px;
+    top: 100%;
+    transform: translateY(-120%);
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 5px;
+    left: 36%;
+}
+
+#attackMenu {
+    background-color: rgba(250, 127, 56, 0.683);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    border-radius: 20px;
+
+    clip-path: polygon(0px calc(100% - 15px),
+            3px calc(100% - 15px),
+            3px calc(100% - 9px),
+            6px calc(100% - 9px),
+            6px calc(100% - 6px),
+            9px calc(100% - 6px),
+            9px calc(100% - 3px),
+            15px calc(100% - 3px),
+            15px 100%,
+            calc(100% - 15px) 100%,
+            calc(100% - 15px) calc(100% - 3px),
+            calc(100% - 9px) calc(100% - 3px),
+            calc(100% - 9px) calc(100% - 6px),
+            calc(100% - 6px) calc(100% - 6px),
+            calc(100% - 6px) calc(100% - 9px),
+            calc(100% - 3px) calc(100% - 9px),
+            calc(100% - 3px) calc(100% - 15px),
+            100% calc(100% - 15px),
+            100% 15px,
+            calc(100% - 3px) 15px,
+            calc(100% - 3px) 9px,
+            calc(100% - 6px) 9px,
+            calc(100% - 6px) 6px,
+            calc(100% - 9px) 6px,
+            calc(100% - 9px) 3px,
+            calc(100% - 15px) 3px,
+            calc(100% - 15px) 0px,
+            15px 0px,
+            15px 3px,
+            9px 3px,
+            9px 6px,
+            6px 6px,
+            6px 9px,
+            3px 9px,
+            3px 15px,
+            0px 15px);
+}
+
+#attackMenu:hover {
+    background-color: rgb(250, 127, 56);
+}
+
+#textbox {
+    position: absolute;
+    width: 350px;
+    height: 100px;
+    top: 100%;
+    left: 10px;
+    transform: translateY(-120%);
+    border-radius: 20px;
+    background-color: rgba(250, 127, 56, 0.683);
+    text-align: center;
+    word-wrap: normal;
+    clip-path: polygon(0px calc(100% - 20px),
+            4px calc(100% - 20px),
+            4px calc(100% - 12px),
+            8px calc(100% - 12px),
+            8px calc(100% - 8px),
+            12px calc(100% - 8px),
+            12px calc(100% - 4px),
+            20px calc(100% - 4px),
+            20px 100%,
+            calc(100% - 20px) 100%,
+            calc(100% - 20px) calc(100% - 4px),
+            calc(100% - 12px) calc(100% - 4px),
+            calc(100% - 12px) calc(100% - 8px),
+            calc(100% - 8px) calc(100% - 8px),
+            calc(100% - 8px) calc(100% - 12px),
+            calc(100% - 4px) calc(100% - 12px),
+            calc(100% - 4px) calc(100% - 20px),
+            100% calc(100% - 20px),
+            100% 20px,
+            calc(100% - 4px) 20px,
+            calc(100% - 4px) 12px,
+            calc(100% - 8px) 12px,
+            calc(100% - 8px) 8px,
+            calc(100% - 12px) 8px,
+            calc(100% - 12px) 4px,
+            calc(100% - 20px) 4px,
+            calc(100% - 20px) 0px,
+            20px 0px,
+            20px 4px,
+            12px 4px,
+            12px 8px,
+            8px 8px,
+            8px 12px,
+            4px 12px,
+            4px 20px,
+            0px 20px);
+}
+
+#playerImageContainer {
+    display: flex;
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    /* border: 2px solid black; */
+    top: 30%;
+    left: 5%;
+    justify-content: center;
+    align-items: center;
+}
+
+#playerEatermonImg {
+    /* Every Eatermon Is 32x32 by default :) */
+    width: calc(32px * 8);
+    height: calc(32px * 8);
+    image-rendering: pixelated;
+}
+
+#playerHPContiner {
+    position: absolute;
+    top: 25%;
+    left: 5%;
+    width: 200px;
+    height: 20px;
+    border: black 2px solid;
+    border-radius: 20px;
+}
+
+#playerName {
+    position: absolute;
+    transform: translateY(-200%);
+    font-size: 16px;
+}
+
+#playerXP {
+    position: absolute;
+    transform: translateY(-200%);
+    left: 58%;
+    font-size: 16px;
+}
+
+#playerHPBar {
+    width: 50%;
+    height: 100%;
+    background-color: red;
+    border-radius: 20px;
+}
+
+#playerHP {
+    position: absolute;
+    left: 26%;
+    top: 23%;
+}
+
+/* Enemy Section */
+
+#enemyImageContainer {
+    display: flex;
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    /* border: 2px solid black; */
+    top: 20%;
+    left: 65%;
+    justify-content: center;
+    align-items: center;
+    transform: scaleX(-1);
+}
+
+#enemyEatermonImg {
+    /* Every Eatermon Is 32x32 by default :) */
+    width: calc(32px * 8);
+    height: calc(32px * 8);
+    image-rendering: pixelated;
+}
+
+
+#enemyHpContainer {
+    position: absolute;
+    top: 15%;
+    left: 70%;
+    width: 200px;
+    height: 20px;
+    border: black 2px solid;
+    border-radius: 20px;
+}
+
+#enemyName {
+    position: absolute;
+    transform: translateY(-200%);
+    font-size: 16px;
+    left: 60%;
+}
+
+#enemyXP {
+    position: absolute;
+    transform: translateY(-200%);
+    font-size: 16px;
+}
+
+#enemyHPBar {
+    width: 50%;
+    height: 100%;
+    background-color: rgb(255, 0, 0);
+    border-radius: 20px;
+}
+
+#enemyHP {
+    position: absolute;
+    left: 63%;
+    top: 13%;
+}

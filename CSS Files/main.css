@@ -1,5 +1,9 @@
+* {
+    font-family: "Pixelify Sans", sans-serif;
+}
+
 body {
-background-color: gray;
+    background-color: gray;
 }
 
 #gameCanvas {
@@ -9,7 +13,11 @@ background-color: gray;
     border: solid black 2px;
     left: 50%;
     top: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     background-color: white;
     image-rendering: pixelated;
 }
+
+/*
+    Note: PLEASE Keep a consistant z-index. This has been an ongoing issue with my projects
+*/

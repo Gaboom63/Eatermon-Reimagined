@@ -5,12 +5,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eatermon Reimagined</title>
+    <link rel="stylesheet" href="CSS Files/battleMenu.css">
     <link rel="stylesheet" href="CSS Files/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-    <canvas id="gameCanvas" width="1024" height="560"></canvas>
+    <div id="battleMenu">
+        <div id="playerContents"> <!-- This div exists for easy ability to collapse all player values.-->
+            <div id="playerHPContiner">
+                <b>
+                    <p id="playerName">Name</p>
+                    <p id="playerXP">Level. 1</p>
+                </b>
+                <div id="playerHPBar"></div>
+            </div>
+            <p id="playerHP">100 / 100</p>
+            <div id="playerImageContainer">
+                <img id="playerEatermonImg" src="Images/Eatermons/Ban Blast.png">
+            </div>
+            <div id="textbox"></div>
+            <div id="attackContainer">
+                <div id="attackMenu">Attack</div>
+                <div id="attackMenu">Bag</div>
+                <div id="attackMenu">Eatermon</div>
+                <div id="attackMenu">Run</div>
+            </div>
+        </div>
+        <div id="enemyContents">
+            <div id="enemyHpContainer">
+                <b>
+                    <p id="enemyName">Name</p>
+                    <p id="enemyXP">Level. 1</p>
+                </b>
+                <div id="enemyHPBar"></div>
+            </div>
+            <p id="enemyHP">100 / 100</p>
+            <div id="enemyImageContainer">
+                <img id="enemyEatermonImg" src="Images/Eatermons/Allahdoodle.png">
+            </div>
+        </div>
+    </div>
+    <canvas id="gameCanvas" width="1024" height="480"></canvas>
+
+    <script src="JS Files/eatermons.js"></script>
     <script src="JS Files/game.js"></script>
 </body>
 
