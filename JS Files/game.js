@@ -26,6 +26,23 @@ const enemyHPBar = document.getElementById('enemyHPBar');
 const battleTextbox = document.getElementById('textbox');
 // --------------------------
 
+// Everything bellow is for movement
+const FRAME_WIDTH = 32;
+const FRAME_HEIGHT = 32;
+const COLUMNS = 4;
+const TILE_SIZE = 32;
+const MOVE_SPEED = 128; // Exactly 4 tiles per second (if tiles are 32px)
+const frameDelay = 64;  // 4 animation frames * 64ms = 256ms per full animation cycle
+const SCALE = 3;
+
+let direction = 0;
+let currentFrame = 0;
+let frameTimer = 0;
+let lastTime = 0;
+let moving = false;
+let targetX = 0;
+let targetY = 0;
+// ---------------------- 
 
 function Battle(route) { // Route could in the future determine the Eatermons available / the battle initiatied. 
     let findOpponet = Math.floor(Math.random() * (routeOne.length - routeOne.length, routeOne.length)) + routeOne.length - routeOne.length;
@@ -67,6 +84,9 @@ function Battle(route) { // Route could in the future determine the Eatermons av
 }
 
 
+function leaveBattle() {
+    battleMenu.style.display = 'none';
+}
 
 let routeOne = [ // This is PURELY For example / testing and WILL be removed. 
     createEatermon('woodle'),
@@ -88,62 +108,158 @@ let player = {
     team: playerTeam
 }
 
-let isMovingLeft = false;
-let isMovingRight = false;
-let isMovingUp = false;
-let isMovingDown = false;
+const keys = {
+    ArrowUp: false,
+    ArrowDown: false,
+    ArrowLeft: false,
+    ArrowRight: false
+};
 
+// When a key is pressed, mark it as true
 document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowLeft') {
-        isMovingLeft = true;
-    }
-
-    if (e.key === 'ArrowRight') {
-        isMovingRight = true;
-    }
-
-    if (e.key === 'ArrowDown') {
-        isMovingDown = true;
-    }
-
-    if (e.key === 'ArrowUp') {
-        isMovingUp = true;
+    if (keys.hasOwnProperty(e.key)) {
+        keys[e.key] = true;
     }
 });
 
-function leaveBattle() {
-    battleMenu.style.display = 'none';
+// When a key is released, mark it as false
+document.addEventListener('keyup', e => {
+    if (keys.hasOwnProperty(e.key)) {
+        keys[e.key] = false;
+    }
+});
+
+document.addEventListener('keydown', e => {
+    // Prevent moving if already walking OR if in a battle
+    if (moving || inBattle) return;
+
+    if (e.key === 'ArrowDown') {
+        direction = 0;
+        startMove(0, TILE_SIZE);
+    }
+    if (e.key === 'ArrowUp') {
+        direction = 1;
+        startMove(0, -TILE_SIZE);
+    }
+    if (e.key === 'ArrowRight') {
+        direction = 2;
+        startMove(TILE_SIZE, 0);
+    }
+    if (e.key === 'ArrowLeft') {
+        direction = 3;
+        startMove(-TILE_SIZE, 0);
+    }
+});
+
+function handleInput() {
+    // If the player is already moving between tiles, or in a battle, do nothing
+    if (moving || inBattle) return;
+
+    // Check which key is held down and start the next move instantly
+    if (keys.ArrowDown) {
+        direction = 0;
+        startMove(0, TILE_SIZE);
+    } else if (keys.ArrowUp) {
+        direction = 1;
+        startMove(0, -TILE_SIZE);
+    } else if (keys.ArrowRight) {
+        direction = 2;
+        startMove(TILE_SIZE, 0);
+    } else if (keys.ArrowLeft) {
+        direction = 3;
+        startMove(-TILE_SIZE, 0);
+    }
 }
 
-function gameLoop() {
+function startMove(dx, dy) {
+    moving = true;
+    targetX = player.x + dx;
+    targetY = player.y + dy;
+}
+
+function updateAnimation(deltaTime) {
+    if (!moving) {
+        currentFrame = 0; // Snap to idle frame
+        frameTimer = 0;   // Reset the timer for the next time we move
+        return;
+    }
+
+    frameTimer += deltaTime;
+
+    if (frameTimer >= frameDelay) {
+        currentFrame++;
+        if (currentFrame >= 4) currentFrame = 0;
+        frameTimer = 0;
+    }
+}
+
+function updateMovement(deltaTime) {
+    if (!moving) return;
+
+    // How many pixels to move this frame based on time (ms)
+    const step = (MOVE_SPEED * deltaTime) / 1000;
+
+    // Handle X movement
+    if (player.x !== targetX) {
+        if (Math.abs(targetX - player.x) <= step) {
+            player.x = targetX; // Snap to target to prevent overshooting
+        } else {
+            player.x += (player.x < targetX) ? step : -step;
+        }
+    }
+
+    // Handle Y movement
+    if (player.y !== targetY) {
+        if (Math.abs(targetY - player.y) <= step) {
+            player.y = targetY; // Snap to target to prevent overshooting
+        } else {
+            player.y += (player.y < targetY) ? step : -step;
+        }
+    }
+
+    // Stop moving once we hit the exact target
+    if (player.x === targetX && player.y === targetY) {
+        moving = false;
+    }
+}
+
+function drawPlayer() {
+    // Math.round() prevents sub-pixel blurring!
+    const drawX = Math.round(player.x);
+    const drawY = Math.round(player.y);
+
+    ctx.drawImage(
+        playerImg,
+        currentFrame * TILE_SIZE,
+        direction * TILE_SIZE,
+        TILE_SIZE,
+        TILE_SIZE,
+        drawX,
+        drawY,
+        TILE_SIZE * SCALE,
+        TILE_SIZE * SCALE
+    );
+}
+
+let playerImg = new Image();
+playerImg.src = 'Images/Player/Player.png';
+ctx.imageSmoothingEnabled = false;
+
+function gameLoop(timestamp) {
+    if (!lastTime) lastTime = timestamp; 
+    const deltaTime = timestamp - lastTime;
+    lastTime = timestamp;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(player.x, player.y, player.width, player.height);
-
-    if (isMovingRight) {
-        player.x += player.width;
-        isMovingRight = false;
-    }
-
-    if (isMovingLeft) {
-        player.x -= player.width;
-        isMovingLeft = false;
-    }
-
-    if (isMovingDown) {
-        player.y += player.height;
-        isMovingDown = false;
-    }
-
-    if (isMovingUp) {
-        player.y -= player.height;
-        isMovingUp = false;
-    }
 
     if (inBattle) {
         Battle();
     }
+
+    handleInput();
+    updateMovement(deltaTime);
+    updateAnimation(deltaTime);
+    drawPlayer();
 
     requestAnimationFrame(gameLoop);
 }
