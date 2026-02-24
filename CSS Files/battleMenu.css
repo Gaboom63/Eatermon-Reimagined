@@ -11,7 +11,7 @@
     z-index: 1;
     background-image: url('../Images/Backgrounds/TemporaryBG.png');
     background-size: cover;
-    /* display: none; */
+    display: none;
 }
 
 #attackContainer {

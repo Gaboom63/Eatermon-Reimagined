@@ -3,21 +3,18 @@
 }
 
 body {
-    background-color: gray;
+    background-color: rgb(128, 128, 128);
 }
 
 #gameCanvas {
     position: absolute;
-    width: 1024px;
-    height: 560px;
+    width: 1026px; /* 342 * 3 = 1026 */
+    height: 558px; /* 186 * 3 = 558 */
     border: solid black 2px;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    background-color: white;
+    background-color: rgb(66, 66, 66);
     image-rendering: pixelated;
 }
 
-/*
-    Note: PLEASE Keep a consistant z-index. This has been an ongoing issue with my projects
-*/

@@ -30,10 +30,11 @@ const battleTextbox = document.getElementById('textbox');
 const FRAME_WIDTH = 32;
 const FRAME_HEIGHT = 32;
 const COLUMNS = 4;
-const TILE_SIZE = 32;
-const MOVE_SPEED = 128; // Exactly 4 tiles per second (if tiles are 32px)
+const FRAME_SIZE = 32;  // The size of the character on the spritesheet
+const TILE_SIZE = 32;   // The size of the grid and map tiles
+const MOVE_SPEED = 180; // Doubled from 128 so it feels the same over larger tiles
 const frameDelay = 64;  // 4 animation frames * 64ms = 256ms per full animation cycle
-const SCALE = 3;
+const SCALE = 2;
 
 let direction = 0;
 let currentFrame = 0;
@@ -152,25 +153,25 @@ document.addEventListener('keydown', e => {
 });
 
 function handleInput() {
-    // If the player is already moving between tiles, or in a battle, do nothing
     if (moving || inBattle) return;
 
-    // Check which key is held down and start the next move instantly
+    // Multiply TILE_SIZE by SCALE to match your 96px visual size
+    const moveDistance = TILE_SIZE * SCALE;
+
     if (keys.ArrowDown) {
         direction = 0;
-        startMove(0, TILE_SIZE);
+        startMove(0, moveDistance);
     } else if (keys.ArrowUp) {
         direction = 1;
-        startMove(0, -TILE_SIZE);
+        startMove(0, -moveDistance);
     } else if (keys.ArrowRight) {
         direction = 2;
-        startMove(TILE_SIZE, 0);
+        startMove(moveDistance, 0);
     } else if (keys.ArrowLeft) {
         direction = 3;
-        startMove(-TILE_SIZE, 0);
+        startMove(-moveDistance, 0);
     }
 }
-
 function startMove(dx, dy) {
     moving = true;
     targetX = player.x + dx;
@@ -223,8 +224,11 @@ function updateMovement(deltaTime) {
     }
 }
 
+// Divide your CSS dimensions by your SCALE (3) to get the internal resolution
+canvas.width = 342;
+canvas.height = 186;
+
 function drawPlayer() {
-    // Math.round() prevents sub-pixel blurring!
     const drawX = Math.round(player.x);
     const drawY = Math.round(player.y);
 
@@ -245,8 +249,16 @@ let playerImg = new Image();
 playerImg.src = 'Images/Player/Player.png';
 ctx.imageSmoothingEnabled = false;
 
+let lowerMapImg = new Image();
+lowerMapImg.src = 'Images/Maps/lowerBedroom.png'
+ctx.imageSmoothingEnabled = false;
+
+let upperMapImg = new Image();
+upperMapImg.src = 'Images/Maps/upperBedroom.png'
+ctx.imageSmoothingEnabled = false;
+
 function gameLoop(timestamp) {
-    if (!lastTime) lastTime = timestamp; 
+    if (!lastTime) lastTime = timestamp;
     const deltaTime = timestamp - lastTime;
     lastTime = timestamp;
 
@@ -259,8 +271,24 @@ function gameLoop(timestamp) {
     handleInput();
     updateMovement(deltaTime);
     updateAnimation(deltaTime);
+
+    // --- CAMERA LOGIC START ---
+    ctx.save();
+
+    const cameraX = (canvas.width / 2) - (player.x + (TILE_SIZE / 2));
+    const cameraY = (canvas.height / 2) - (player.y + (TILE_SIZE / 2));
+
+    ctx.translate(Math.floor(cameraX), Math.floor(cameraY));
+
+    ctx.drawImage(lowerMapImg, -32, -32); // Draw Lower Map
+
     drawPlayer();
+
+    ctx.drawImage(upperMapImg, -32, -32); 
+
+    ctx.restore();
 
     requestAnimationFrame(gameLoop);
 }
+
 gameLoop();
