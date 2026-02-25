@@ -8,8 +8,10 @@ body {
 
 #gameCanvas {
     position: absolute;
-    width: 1026px; /* 342 * 3 = 1026 */
-    height: 558px; /* 186 * 3 = 558 */
+    width: 1026px;
+    /* 342 * 3 = 1026 */
+    height: 558px;
+    /* 186 * 3 = 558 */
     border: solid black 2px;
     left: 50%;
     top: 50%;
@@ -18,3 +20,49 @@ body {
     image-rendering: pixelated;
 }
 
+#imageBox {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border: 2px solid rgb(255, 128, 54);
+    border-radius: 20px;
+    z-index: 1;
+    top: 60%;
+    left: 15%;
+    background-color: rgba(252, 132, 63, 0.24);
+    image-rendering: pixelated;
+    overflow: hidden;
+}
+
+#textContainer {
+    position: absolute;
+    width: 1300px;
+    height: 600px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    display: none;
+}
+
+#talkingImg {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -35%);
+}
+
+#mainTalkingBox {
+    position: absolute;
+    width: 600px;
+    height: 200px;
+    border: 2px solid rgb(255, 128, 54);
+    top: 60%;
+    left: 33%;
+    border-radius: 20px;
+    background-color: rgba(252, 132, 63, 0.24);
+    text-align: center;
+    font-size: 40px;
+}

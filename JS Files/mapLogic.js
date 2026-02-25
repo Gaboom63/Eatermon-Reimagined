@@ -1,7 +1,7 @@
 const mapOffsetX = -32;
 const mapOffsetY = -32;
 
-let currentMap = MAPS[0]; // <--- THIS WILL BE A GIANT IMPORTANT PART OF EVERYTHING LOL
+let currentMap = MAPS[1]; // <--- THIS WILL BE A GIANT IMPORTANT PART OF EVERYTHING LOL
 
 
 // Function to draw the floor/background layer (under the player)

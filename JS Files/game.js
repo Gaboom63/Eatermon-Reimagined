@@ -55,6 +55,14 @@ let targetY = 0;
 // --------------------------
 // Player & Battle Logic
 // --------------------------
+
+function loadTextBox(talkingIMG) {
+    let textContainer = document.getElementById('textContainer');
+    let talkingImg = document.getElementById('talkingImg'); 
+    talkingImg.src = `${talkingIMG}`; 
+    textContainer.style.display = 'revert';
+}
+
 let routeOne = [ // This is PURELY For example / testing and WILL be removed. 
     createEatermon('woodle'),
     createEatermon('tomadoodle'),
@@ -71,7 +79,8 @@ let player = {
     width: 32,
     height: 32,
     name: "Henry",
-    team: playerTeam
+    team: playerTeam,
+    talkingImg: 'Images/Talking-Players/Player_TALKING.png'
 };
 
 function Battle(route) {
