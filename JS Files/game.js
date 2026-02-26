@@ -1,48 +1,53 @@
+// ==========================================
+// main.js - Core Engine and Game Loop
+// ==========================================
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 canvas.width = 342;
 canvas.height = 186;
-ctx.imageSmoothingEnabled = false; // Keeps pixel art crisp
+ctx.imageSmoothingEnabled = false; 
 
-// --------------------------
-// Battle Constants & Elements
-// --------------------------
-let inBattle = false;
-let needsInit = true;
-let updatingStats = false;
-let battleEnding = false;
-let isDebugMode = true; // Set to true to see the collision blocks on start
-
+// --- HTML Elements ---
 const battleMenu = document.getElementById('battleMenu');
-
 const playerHPContiner = document.getElementById('playerHPContiner');
 const playerName = document.getElementById('playerName');
 const playerXP = document.getElementById('playerXP');
 const playerHPText = document.getElementById('playerHP');
 const playerEatermonImg = document.getElementById('playerEatermonImg');
 const playerHPBar = document.getElementById('playerHPBar');
-
 const enemyHPContiner = document.getElementById('enemyHPContiner');
 const enemyName = document.getElementById('enemyName');
 const enemyXP = document.getElementById('enemyXP');
 const enemyHPText = document.getElementById('enemyHP');
 const enemyEatermonImg = document.getElementById('enemyEatermonImg');
 const enemyHPBar = document.getElementById('enemyHPBar');
-
 const battleTextbox = document.getElementById('textbox');
 
-// --------------------------
-// Movement Constants & State
-// --------------------------
+// --- Global States & Variables ---
+let inBattle = false;
+let needsInit = true;
+let updatingStats = false;
+let battleEnding = false;
+let isDebugMode = true; 
+let inCutscene = false; 
+let inDialogue = false;
+let currentTalkingNPC = null; 
+let currentDialogueIndex = 0; 
+let isTyping = false;
+let typeInterval = null;
+let fullDialogueText = ""; 
+
+// --- Movement Constants ---
 const FRAME_WIDTH = 32;
 const FRAME_HEIGHT = 32;
 const COLUMNS = 4;
-const FRAME_SIZE = 32;  // The size of the character on the spritesheet
-const TILE_SIZE = 32;   // The size of the grid and map tiles
-const MOVE_SPEED = 180; // Adjusted for snappy movement
-const frameDelay = 64;  // 4 animation frames * 64ms = 256ms per full cycle
-const SCALE = 2;        // JS Scale multiplier for 64px movement steps
+const FRAME_SIZE = 32;  
+const TILE_SIZE = 32;   
+const MOVE_SPEED = 180; 
+const frameDelay = 64;  
+const SCALE = 2;        
 
 let direction = 0;
 let currentFrame = 0;
@@ -52,95 +57,38 @@ let moving = false;
 let targetX = 0;
 let targetY = 0;
 
-// --------------------------
-// Player & Battle Logic
-// --------------------------
-
-function loadTextBox(talkingIMG) {
-    let textContainer = document.getElementById('textContainer');
-    let talkingImg = document.getElementById('talkingImg');
-    talkingImg.src = `${talkingIMG}`;
-    textContainer.style.display = 'revert';
-}
-
-let routeOne = [ // This is PURELY For example / testing and WILL be removed. 
-    createEatermon('woodle'),
-    createEatermon('tomadoodle'),
-    createEatermon('pastmala')
-];
-
-let playerTeam = [
-    createEatermon('woodle')
-];
-
+// --- Player Initialization ---
+let playerTeam = [ createEatermon('woodle') ];
 const startCol = 1;
 const startRow = 1;
 
 let player = {
+    // Assuming mapOffsetX and mapOffsetY are defined in your map.js file!
     x: (startCol * TILE_SIZE) + mapOffsetX,
-    y: (startRow * TILE_SIZE) + mapOffsetY, width: 32,
+    y: (startRow * TILE_SIZE) + mapOffsetY, 
+    width: 32,
     height: 32,
     name: "Henry",
     team: playerTeam,
     talkingImg: 'Images/Talking-Players/Player_TALKING.png'
 };
 
+let playerImg = new Image();
+playerImg.src = 'Images/Player/Player.png';
+
 function setPlayerPosition(col, row) {
     player.x = (col * TILE_SIZE) + mapOffsetX;
     player.y = (row * TILE_SIZE) + mapOffsetY;
-
-    // Also update targetX and targetY so the movement logic doesn't get confused
     targetX = player.x;
     targetY = player.y;
-    moving = false; // Make sure they aren't mid-step when they teleport
+    moving = false; 
 }
 
-function Battle(route) {
-    let findOpponet = Math.floor(Math.random() * (routeOne.length - routeOne.length, routeOne.length)) + routeOne.length - routeOne.length;
-    if (needsInit) {
-        battleMenu.style.display = 'revert';
+// --- Input Handling ---
+// [!!! PASTE YOUR keydown, keyup, and handleInput() FUNCTIONS HERE !!!]
 
-        playerName.innerHTML = `${player.team[0].name}`;
-        playerXP.innerHTML = `Level. ${player.team[0].level}`;
-        playerHPText.innerHTML = `${player.team[0].hp} / ${player.team[0].maxHP}`;
-        playerEatermonImg.src = `Images/Eatermons/${player.team[0].name}.png`;
-        playerHPBar.style.width = `${(player.team[0].hp / player.team[0].maxHP) * 100}%`;
 
-        enemyName.innerHTML = `${routeOne[findOpponet].name}`;
-        enemyXP.innerHTML = `Level. ${routeOne[findOpponet].level}`;
-        enemyHPText.innerHTML = `${routeOne[findOpponet].hp} / ${routeOne[findOpponet].maxHP}`;
-        enemyEatermonImg.src = `Images/Eatermons/${routeOne[findOpponet].name}.png`;
-        enemyHPBar.style.width = `${(routeOne[findOpponet].hp / routeOne[findOpponet].maxHP) * 100}%`;
-
-        battleTextbox.innerHTML = `GO ${player.team[0].name}!`;
-        setTimeout(() => {
-            battleTextbox.innerHTML = `${player.name}'s ${player.team[0].name} VS. ${routeOne[findOpponet].name}! <br> What will you do?`;
-        }, 1000);
-        needsInit = false;
-        updatingStats = true;
-    } else if (updatingStats && !needsInit) {
-        playerHPText.innerHTML = `${player.team[0].hp} / ${player.team[0].maxHP}`;
-        playerHPBar.style.width = `${(player.team[0].hp / player.team[0].maxHP) * 100}%`;
-
-        enemyHPText.innerHTML = `${routeOne[findOpponet].hp} / ${routeOne[findOpponet].maxHP}`;
-        enemyHPBar.style.width = `${(routeOne[findOpponet].hp / routeOne[findOpponet].maxHP) * 100}%`;
-
-        if (player.team[0].hp === 0 || routeOne[findOpponet].hp === 0) {
-            updatingStats = false;
-            battleEnding = true;
-        }
-    } else if (battleEnding) {
-        // Add Ending Logic in future. 
-    }
-}
-
-function leaveBattle() {
-    battleMenu.style.display = 'none';
-}
-
-// --------------------------
-// Movement & Animation Functions
-// --------------------------
+// --- Movement & Animation ---
 function startMove(dx, dy) {
     moving = true;
     targetX = player.x + dx;
@@ -149,13 +97,11 @@ function startMove(dx, dy) {
 
 function updateAnimation(deltaTime) {
     if (!moving) {
-        currentFrame = 0; // Snap to idle frame
-        frameTimer = 0;   // Reset the timer
+        currentFrame = 0; 
+        frameTimer = 0;   
         return;
     }
-
     frameTimer += deltaTime;
-
     if (frameTimer >= frameDelay) {
         currentFrame++;
         if (currentFrame >= COLUMNS) currentFrame = 0;
@@ -165,56 +111,36 @@ function updateAnimation(deltaTime) {
 
 function updateMovement(deltaTime) {
     if (!moving) return;
-
     const step = (MOVE_SPEED * deltaTime) / 1000;
 
     if (player.x !== targetX) {
-        if (Math.abs(targetX - player.x) <= step) {
-            player.x = targetX;
-        } else {
-            player.x += (player.x < targetX) ? step : -step;
-        }
+        if (Math.abs(targetX - player.x) <= step) player.x = targetX;
+        else player.x += (player.x < targetX) ? step : -step;
     }
 
     if (player.y !== targetY) {
-        if (Math.abs(targetY - player.y) <= step) {
-            player.y = targetY;
-        } else {
-            player.y += (player.y < targetY) ? step : -step;
-        }
+        if (Math.abs(targetY - player.y) <= step) player.y = targetY;
+        else player.y += (player.y < targetY) ? step : -step;
     }
 
-    if (player.x === targetX && player.y === targetY) {
-        moving = false;
-    }
+    if (player.x === targetX && player.y === targetY) moving = false;
 }
 
-// --------------------------
-// Drawing Logic
-// --------------------------
-let playerImg = new Image();
-playerImg.src = 'Images/Player/Player.png';
-
 function drawPlayer() {
-    const drawX = Math.round(player.x);
-    const drawY = Math.round(player.y);
-
     ctx.drawImage(
         playerImg,
         currentFrame * TILE_SIZE,
         direction * TILE_SIZE,
         TILE_SIZE,
         TILE_SIZE,
-        drawX,
-        drawY,
+        Math.round(player.x),
+        Math.round(player.y),
         TILE_SIZE * SCALE,
         TILE_SIZE * SCALE
     );
 }
 
-// --------------------------
-// Main Game Loop
-// --------------------------
+// --- Core Game Loop ---
 function gameLoop(timestamp) {
     if (!lastTime) lastTime = timestamp;
     const deltaTime = timestamp - lastTime;
@@ -226,35 +152,38 @@ function gameLoop(timestamp) {
         Battle();
     }
 
-    handleInput();
+    handleInput(); 
     updateMovement(deltaTime);
     updateAnimation(deltaTime);
+    updateNPCs(deltaTime); 
 
-    // --- CAMERA LOGIC ---
     ctx.save();
 
     const renderX = Math.round(player.x);
     const renderY = Math.round(player.y);
-
-    // Calculate camera offset to center the player
     const cameraX = (canvas.width / 2) - (renderX + ((TILE_SIZE * SCALE) / 2));
     const cameraY = (canvas.height / 2) - (renderY + ((TILE_SIZE * SCALE) / 2));
 
-    ctx.translate(cameraX | 0, cameraY | 0); // fast floor    // Draw Map & Player (Using functions imported from map.js)
-    drawLowerMap(ctx);
+    ctx.translate(cameraX | 0, cameraY | 0); 
+    
+    // Draw calls (assuming map functions are in map.js)
+    if (typeof drawLowerMap === "function") drawLowerMap(ctx);
+    drawNPCs(); 
     drawPlayer();
-    drawUpperMap(ctx);
+    if (typeof drawUpperMap === "function") drawUpperMap(ctx);
 
-    if (isDebugMode) {
+    if (isDebugMode && typeof drawDebugGrid === "function") {
         drawDebugGrid(ctx, TILE_SIZE);
     }
 
-    mapSwitch()
+    // Checking door transitions (assuming mapSwitch is in map.js or similar)
+    if (typeof mapSwitch === "function") mapSwitch();
 
     ctx.restore();
 
     requestAnimationFrame(gameLoop);
 }
 
-// Start the game loop
+// Start everything up!
+if (typeof initNPCs === "function") initNPCs();
 requestAnimationFrame(gameLoop);

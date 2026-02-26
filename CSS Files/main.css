@@ -66,3 +66,48 @@ body {
     text-align: center;
     font-size: 40px;
 }
+
+
+
+/* The bouncing arrow style */
+.dialogue-arrow {
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    font-size: 24px;
+    color: black; /* Change this if your text box is dark! */
+    animation: bounce 0.5s infinite alternate;
+}
+
+/* The animation that makes it float up and down */
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(6px); }
+}
+
+#fadeScreen {
+    position: absolute;
+    width: 1026px; /* Match your canvas CSS width exactly */
+    height: 558px; /* Match your canvas CSS height exactly */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: black;
+    
+    /* Start completely invisible */
+    opacity: 0; 
+    
+    /* Don't block mouse clicks when invisible */
+    pointer-events: none; 
+    
+    /* This tells CSS to animate the opacity over 0.5 seconds! */
+    transition: opacity 0.5s ease-in-out; 
+    
+    /* Make sure it sits above the canvas and everything else */
+    z-index: 100; 
+}
+
+/* We will trigger this class with JavaScript to make it go black */
+.fade-black {
+    opacity: 1 !important;
+}

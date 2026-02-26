@@ -1,7 +1,7 @@
 const mapOffsetX = -32;
 const mapOffsetY = -32;
 
-let currentMap = MAPS[3]; // <--- THIS WILL BE A GIANT IMPORTANT PART OF EVERYTHING LOL
+let currentMap = MAPS[1]; // <--- THIS WILL BE A GIANT IMPORTANT PART OF EVERYTHING LOL
 
 
 // Function to draw the floor/background layer (under the player)
@@ -20,12 +20,27 @@ function drawUpperMap(ctx) {
 
 // This function checks if a specific column (x) and row (y) is a wall
 function isSolid(col, row) {
-    // 1. Check if the player is trying to walk completely off the map grid
-    if (row < 0 || row >= currentMap.barrierGrid.length || col < 0 || col >= currentMap.barrierGrid[0].length) {
-        return true; // Treat out-of-bounds as a wall
+    if (row < 0 || row >= currentMap.barrierGrid.length ||
+        col < 0 || col >= currentMap.barrierGrid[0].length) {
+        return true;
     }
-    // 2. Check the grid array. If it's a 1, it's solid!
-    return currentMap.barrierGrid[row][col] === 1;
+
+    // 1. Check for physical walls in the array
+    if (currentMap.barrierGrid[row][col] === 1) {
+        return true;
+    }
+
+    // 2. Check if an NPC is standing on this tile
+    if (currentMap.npcs) {
+        for (let i = 0; i < currentMap.npcs.length; i++) {
+            let npc = currentMap.npcs[i];
+            if (npc.col === col && npc.row === row) {
+                return true; // The NPC acts as a solid wall!
+            }
+        }
+    }
+
+    return false; // Tile is empty, you can walk!
 }
 
 function drawDebugGrid(ctx, gridSize) {
@@ -57,6 +72,7 @@ function drawDebugGrid(ctx, gridSize) {
 
 function transitionMaps(destination) {
     currentMap = MAPS[destination];
+    initNPCs();
 }
 
 function coords() {
@@ -79,32 +95,64 @@ function mapSwitch() {
         if (typeof tileData === 'string') {
             switch (tileData) {
                 case 'HOME_BEDROOM_TO_HOME_LIVING_ROOM':
-                    setPlayerPosition(9, 2);
-                    transitionMaps(1);
+                    // Map ID 1, spawn at Column 9, Row 2
+                    warpToNewMap(1, 9, 2);
                     break;
 
                 case 'LIVING_ROOM_TO_HOME_BEDROOM':
-                    setPlayerPosition(3, 5);
-                    transitionMaps(0);
+                    warpToNewMap(0, 3, 5);
                     break;
 
                 case 'LIVING_ROOM_TO_HOME_TOWN':
-                    setPlayerPosition(1, 13);
-                    transitionMaps(2);
+                    warpToNewMap(2, 1, 13);
                     break;
 
                 case 'HOME_TOWN_TO_HOME_LIVING_ROOM':
-                    setPlayerPosition(5, 9);
-                    transitionMaps(1);
+                    warpToNewMap(1, 5, 9);
                     break;
+
                 case 'HOME_TOWN_TO_ROUTE_ONE':
-                    setPlayerPosition(1, 1);
-                    transitionMaps(3);
+                    warpToNewMap(3, 2, 28);
                     break;
+
+                case 'ROUTE_ONE_TO_HOME_TOWN':
+                    warpToNewMap(2, 13, 1);
+                    break;
+
                 default:
                     console.log("Stepped on unknown event string:", tileData);
                     break;
             }
         }
     }
+}
+
+function warpToNewMap(destinationMapId, spawnCol, spawnRow) {
+    const fadeScreen = document.getElementById('fadeScreen');
+
+    // 1. Freeze the player so they can't walk during the transition
+    inCutscene = true;
+
+    // 2. Trigger the CSS fade-to-black
+    fadeScreen.classList.add('fade-black');
+
+    // 3. Wait 500ms for the screen to go completely black
+    setTimeout(() => {
+
+        // --- DO THE SNEAKY MAP SWAP IN THE DARK ---
+        currentMap = MAPS[destinationMapId];
+        setPlayerPosition(spawnCol, spawnRow);
+
+        // Initialize the NPCs for the new room!
+        if (typeof initNPCs === "function") initNPCs();
+
+        // 4. Fade back to the game
+        fadeScreen.classList.remove('fade-black');
+
+        // 5. Wait another 500ms for the fade-in to finish before unfreezing
+        setTimeout(() => {
+            inCutscene = false;
+        }, 500);
+
+    }, 500); // 500ms perfectly matches your CSS transition time
 }

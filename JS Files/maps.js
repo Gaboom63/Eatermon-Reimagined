@@ -31,6 +31,21 @@ const MAPS = [
             [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 'LIVING_ROOM_TO_HOME_TOWN', 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ],
+        npcs: [
+            {
+                name: 'Mom',
+                col: 5,               // The column she stands on
+                row: 4,               // The row she stands on
+                direction: 2, // 0. Down 1. Up 2. Right 3. Left
+                imageSrc: 'Images/Player/Player.png', // Her overworld sprite
+                talkingImg: 'Images/Talking-Players/Player_TALKING.png', // Her portrait
+                dialogue: [
+                    "Henry, wait!",
+                    "Don't forget to take your Eatermon before you leave!",
+                    "It's dangerous to go alone."
+                ]
+            }
         ]
     },
     {
@@ -89,11 +104,10 @@ const MAPS = [
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            ['ROUTE_ONE_TO_HOME_TOWN', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            ['ROUTE_ONE_TO_HOME_TOWN', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        ]
+        ] // 1, 28
     }
 ]
