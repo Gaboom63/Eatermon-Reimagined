@@ -58,8 +58,8 @@ let targetY = 0;
 
 function loadTextBox(talkingIMG) {
     let textContainer = document.getElementById('textContainer');
-    let talkingImg = document.getElementById('talkingImg'); 
-    talkingImg.src = `${talkingIMG}`; 
+    let talkingImg = document.getElementById('talkingImg');
+    talkingImg.src = `${talkingIMG}`;
     textContainer.style.display = 'revert';
 }
 
@@ -73,15 +73,27 @@ let playerTeam = [
     createEatermon('woodle')
 ];
 
+const startCol = 1;
+const startRow = 1;
+
 let player = {
-    x: 0, // MUST Update X / Y in 32 px increments, so x: 32 = x: 1 (y: 32 = y: 1)
-    y: 0,
-    width: 32,
+    x: (startCol * TILE_SIZE) + mapOffsetX,
+    y: (startRow * TILE_SIZE) + mapOffsetY, width: 32,
     height: 32,
     name: "Henry",
     team: playerTeam,
     talkingImg: 'Images/Talking-Players/Player_TALKING.png'
 };
+
+function setPlayerPosition(col, row) {
+    player.x = (col * TILE_SIZE) + mapOffsetX;
+    player.y = (row * TILE_SIZE) + mapOffsetY;
+
+    // Also update targetX and targetY so the movement logic doesn't get confused
+    targetX = player.x;
+    targetY = player.y;
+    moving = false; // Make sure they aren't mid-step when they teleport
+}
 
 function Battle(route) {
     let findOpponet = Math.floor(Math.random() * (routeOne.length - routeOne.length, routeOne.length)) + routeOne.length - routeOne.length;
@@ -221,13 +233,14 @@ function gameLoop(timestamp) {
     // --- CAMERA LOGIC ---
     ctx.save();
 
+    const renderX = Math.round(player.x);
+    const renderY = Math.round(player.y);
+
     // Calculate camera offset to center the player
-    const cameraX = (canvas.width / 2) - (player.x + ((TILE_SIZE * SCALE) / 2));
-    const cameraY = (canvas.height / 2) - (player.y + ((TILE_SIZE * SCALE) / 2));
+    const cameraX = (canvas.width / 2) - (renderX + ((TILE_SIZE * SCALE) / 2));
+    const cameraY = (canvas.height / 2) - (renderY + ((TILE_SIZE * SCALE) / 2));
 
-    ctx.translate(Math.floor(cameraX), Math.floor(cameraY));
-
-    // Draw Map & Player (Using functions imported from map.js)
+    ctx.translate(cameraX | 0, cameraY | 0); // fast floor    // Draw Map & Player (Using functions imported from map.js)
     drawLowerMap(ctx);
     drawPlayer();
     drawUpperMap(ctx);
@@ -236,19 +249,7 @@ function gameLoop(timestamp) {
         drawDebugGrid(ctx, TILE_SIZE);
     }
 
-    if (player.x === targetX && player.y === targetY) {
-        moving = false;
-
-        // Calculate the exact grid column and row we just landed on
-        // (Remembering to subtract the map offset!)
-        const currentCol = Math.round((player.x - mapOffsetX) / TILE_SIZE);
-        const currentRow = Math.round((player.y - mapOffsetY) / TILE_SIZE);
-
-        // Check if the space we just landed on is an event (2)
-        if (currentMap.barrierGrid[currentRow][currentCol] === 2) {
-            console.log("You stepped on a yellow event space!");
-        }
-    }
+    mapSwitch()
 
     ctx.restore();
 
