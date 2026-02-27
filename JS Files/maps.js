@@ -38,8 +38,8 @@ const MAPS = [
                 col: 5,               // The column she stands on
                 row: 4,               // The row she stands on
                 direction: 2, // 0. Down 1. Up 2. Right 3. Left
-                imageSrc: 'Images/Player/Player.png', // Her overworld sprite
-                talkingImg: 'Images/Talking-Players/Player_TALKING.png', // Her portrait
+                imageSrc: 'Images/Player/Mom.png', // Her overworld sprite
+                talkingImg: 'Images/Talking-Players/Mom_TALKING.png', // Her portrait
                 dialogue: [
                     "Henry, wait!",
                     "Don't forget to take your Eatermon before you leave!",
