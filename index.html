@@ -29,10 +29,22 @@
             </div>
             <div id="textbox"></div>
             <div id="attackContainer">
-                <div id="attackMenu">Attack</div>
-                <div id="attackMenu">Bag</div>
-                <div id="attackMenu">Eatermon</div>
-                <div id="attackMenu">Run</div>
+                <div id="attackMenu" onclick="showMenu('attack')">Attack</div>
+                <div id="attackMenu" onclick="showMenu('bag')">Bag</div>
+                <div id="attackMenu" onclick="showMenu('eatermon')">Eatermon</div>
+                <div id="attackMenu" onclick="showMenu('run')">Run</div>
+            </div>
+            <div id="attackSubContainers">
+                <span style="font-size: 50px; position: absolute; left: 5%; bottom: 80%;" onclick="back()">&larr;</span>
+                <div id="subMenuText"></div>
+                <div id="eatermoinMenuContainer">
+                    <div class="eatermons" id="eatermon1" onclick="swapEatermon('eatermon1')"></div>
+                    <div class="eatermons" id="eatermon2" onclick="swapEatermon('eatermon2')"></div>
+                    <div class="eatermons" id="eatermon3" onclick="swapEatermon('eatermon3')"></div>
+                    <div class="eatermons" id="eatermon4" onclick="swapEatermon('eatermon4')"></div>
+                    <div class="eatermons" id="eatermon5" onclick="swapEatermon('eatermon5')"></div>
+                    <div class="eatermons" id="eatermon6" onclick="swapEatermon('eatermon6')"></div>
+                </div>
             </div>
         </div>
         <div id="enemyContents">

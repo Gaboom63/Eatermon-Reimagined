@@ -50,7 +50,9 @@ const eatermonData = [
     { id: "voladorio", name: "Voladorio", baseHP: 20, baseAttack: 5, maxHP: 20 },
     { id: "waffitoff", name: "WaffItOff", baseHP: 20, baseAttack: 5, maxHP: 20 },
     { id: "woodle", name: "Woodle", baseHP: 20, baseAttack: 5, maxHP: 20 },
-    // { id: "", name: "", baseHP: 20, baseAttack: 5 },
+    { id: "leafle", name: "Leafle", baseHP: 20, baseAttack: 5, maxHP: 20 },
+    { id: "wrapascal", name: "Wrapascal", baseHP: 100, baseAttack: 5, maxHP: 100 },
+    // { id: "", name: "", baseHP: 20, baseAttack: 5, maxHP: 20 },
 ];
 
 const eatermonMap = Object.fromEntries(

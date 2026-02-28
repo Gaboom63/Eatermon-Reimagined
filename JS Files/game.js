@@ -7,7 +7,7 @@ const ctx = canvas.getContext('2d');
 
 canvas.width = 342;
 canvas.height = 186;
-ctx.imageSmoothingEnabled = false; 
+ctx.imageSmoothingEnabled = false;
 
 // --- HTML Elements ---
 const battleMenu = document.getElementById('battleMenu');
@@ -30,24 +30,24 @@ let inBattle = false;
 let needsInit = true;
 let updatingStats = false;
 let battleEnding = false;
-let isDebugMode = true; 
-let inCutscene = false; 
+let isDebugMode = true;
+let inCutscene = false;
 let inDialogue = false;
-let currentTalkingNPC = null; 
-let currentDialogueIndex = 0; 
+let currentTalkingNPC = null;
+let currentDialogueIndex = 0;
 let isTyping = false;
 let typeInterval = null;
-let fullDialogueText = ""; 
+let fullDialogueText = "";
 
 // --- Movement Constants ---
 const FRAME_WIDTH = 32;
 const FRAME_HEIGHT = 32;
 const COLUMNS = 4;
-const FRAME_SIZE = 32;  
-const TILE_SIZE = 32;   
-const MOVE_SPEED = 180; 
-const frameDelay = 64;  
-const SCALE = 2;        
+const FRAME_SIZE = 32;
+const TILE_SIZE = 32;
+const MOVE_SPEED = 180;
+const frameDelay = 64;
+const SCALE = 2;
 
 let direction = 0;
 let currentFrame = 0;
@@ -58,14 +58,14 @@ let targetX = 0;
 let targetY = 0;
 
 // --- Player Initialization ---
-let playerTeam = [ createEatermon('woodle') ];
-const startCol = 1;
-const startRow = 1;
+
+const playerStartCol = 1;
+const playerStartRow = 1;
 
 let player = {
     // Assuming mapOffsetX and mapOffsetY are defined in your map.js file!
-    x: (startCol * TILE_SIZE) + mapOffsetX,
-    y: (startRow * TILE_SIZE) + mapOffsetY, 
+    x: (playerStartCol * TILE_SIZE) + mapOffsetX,
+    y: (playerStartRow * TILE_SIZE) + mapOffsetY,
     width: 32,
     height: 32,
     name: "Henry",
@@ -81,12 +81,8 @@ function setPlayerPosition(col, row) {
     player.y = (row * TILE_SIZE) + mapOffsetY;
     targetX = player.x;
     targetY = player.y;
-    moving = false; 
+    moving = false;
 }
-
-// --- Input Handling ---
-// [!!! PASTE YOUR keydown, keyup, and handleInput() FUNCTIONS HERE !!!]
-
 
 // --- Movement & Animation ---
 function startMove(dx, dy) {
@@ -97,8 +93,8 @@ function startMove(dx, dy) {
 
 function updateAnimation(deltaTime) {
     if (!moving) {
-        currentFrame = 0; 
-        frameTimer = 0;   
+        currentFrame = 0;
+        frameTimer = 0;
         return;
     }
     frameTimer += deltaTime;
@@ -152,10 +148,10 @@ function gameLoop(timestamp) {
         Battle();
     }
 
-    handleInput(); 
+    handleInput();
     updateMovement(deltaTime);
     updateAnimation(deltaTime);
-    updateNPCs(deltaTime); 
+    updateNPCs(deltaTime);
 
     ctx.save();
 
@@ -164,11 +160,11 @@ function gameLoop(timestamp) {
     const cameraX = (canvas.width / 2) - (renderX + ((TILE_SIZE * SCALE) / 2));
     const cameraY = (canvas.height / 2) - (renderY + ((TILE_SIZE * SCALE) / 2));
 
-    ctx.translate(cameraX | 0, cameraY | 0); 
-    
+    ctx.translate(cameraX | 0, cameraY | 0);
+
     // Draw calls (assuming map functions are in map.js)
     if (typeof drawLowerMap === "function") drawLowerMap(ctx);
-    drawNPCs(); 
+    drawNPCs();
     drawPlayer();
     if (typeof drawUpperMap === "function") drawUpperMap(ctx);
 
@@ -187,3 +183,5 @@ function gameLoop(timestamp) {
 // Start everything up!
 if (typeof initNPCs === "function") initNPCs();
 requestAnimationFrame(gameLoop);
+
+Battle(); 
