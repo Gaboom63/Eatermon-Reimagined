@@ -2,12 +2,19 @@ let battleButtons = document.getElementById('attackContainer');
 let battleSubMenu = document.getElementById('attackSubContainers');
 let subMenuText = document.getElementById('subMenuText');
 
+let eatermonMenuContainer = document.getElementById('eatermonMenuContainer');
 let eatermon1 = document.getElementById('eatermon1');
 let eatermon2 = document.getElementById('eatermon2');
 let eatermon3 = document.getElementById('eatermon3');
 let eatermon4 = document.getElementById('eatermon4');
 let eatermon5 = document.getElementById('eatermon5');
 let eatermon6 = document.getElementById('eatermon6');
+
+let attackMenuContainer = document.getElementById('attackMenuContainer');
+let attack1 = document.getElementById('attack1');
+let attack2 = document.getElementById('attack2');
+let attack3 = document.getElementById('attack3');
+let attack4 = document.getElementById('attack4');
 
 let routeOne = [ // This is PURELY For example / testing and WILL be removed. 
     createEatermon('woodle'),
@@ -45,7 +52,6 @@ function Battle(route) {
         }, 1000);
         needsInit = false;
         updatingStats = true;
-        populateEatermonMenu();
     } else if (updatingStats && !needsInit) {
         playerHPText.innerHTML = `${battleParty[0].hp} / ${battleParty[0].maxHP}`;
         playerHPBar.style.width = `${(battleParty[0].hp / battleParty[0].maxHP) * 100}%`;
@@ -69,6 +75,7 @@ function leaveBattle() {
 function showMenu(menuID) {
     switch (menuID) {
         case 'attack':
+            populateAttackMenu();
             battleButtons.style.display = 'none';
             subMenuText.innerHTML = '<u>Attacks</u>';
             battleSubMenu.style.display = 'revert';
@@ -79,6 +86,7 @@ function showMenu(menuID) {
             battleSubMenu.style.display = 'revert';
             break;
         case 'eatermon':
+            populateEatermonMenu();
             battleButtons.style.display = 'none';
             subMenuText.innerHTML = '<u>Eatermons</u>';
             battleSubMenu.style.display = 'revert';
@@ -89,8 +97,35 @@ function showMenu(menuID) {
     }
 }
 
+function attack() {
+    
+}
+
+function populateAttackMenu() {
+    let moveLength = battleParty[0].moves.length;
+    attackMenuContainer.style.display = 'grid';
+    switch (moveLength) {
+        case 1:
+            attack1.innerHTML = `${battleParty[0].moves[0].name}`;
+            break;
+        case 2:
+            attack2.innerHTML = `${battleParty[0].moves[1].name}`;
+            break;
+        case 3:
+            attack3.innerHTML = `${battleParty[0].moves[2].name}`;
+            break;
+        case 4:
+            attack4.innerHTML = `${battleParty[0].moves[3].name}`;
+            break;
+        default:
+            console.log("Uhhhhhh No moves?");
+            break;
+    }
+}
+
 function populateEatermonMenu() {
     let teamLength = playerTeam.length;
+    eatermonMenuContainer.style.display = 'grid';
     switch (teamLength) {
         case 1:
             eatermon1.innerHTML = `${playerTeam[0].name}`;
@@ -183,4 +218,6 @@ function swapEatermon(eatermon) {
 function back() {
     battleSubMenu.style.display = 'none';
     battleButtons.style.display = 'grid';
+    eatermonMenuContainer.style.display = 'none';
+    attackMenuContainer.style.display = 'none';
 }

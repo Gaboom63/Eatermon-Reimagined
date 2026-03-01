@@ -289,7 +289,8 @@
     display: none;
 }
 
-#eatermoinMenuContainer {
+#attackMenuContainer,
+#eatermonMenuContainer {
     position: absolute;
     display: grid;
     width: 350px;
@@ -299,8 +300,10 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-gap: 5px;
+    display: none;
 }
 
+.attacks,
 .eatermons {
     background-color: rgba(250, 127, 56, 0.683);
     display: flex;

@@ -1,19 +1,85 @@
 class Eatermon {
-    constructor(data) {
+    constructor(data, startingLevel = 1) {
         this.name = data.name;
-        this.level = 1;
+        this.level = startingLevel; // Allow spawning at higher levels
         this.hp = data.baseHP;
-        this.maxHP = data.maxHP; 
+        this.maxHP = data.maxHP;
         this.attack = data.baseAttack;
+        this.moves = [];
+
+        // --- Setup moves for wild encounters ---
+        this.initializeMoves(data.learnset);
     }
 
-    levelUp() {
+    // Used ONLY when creating the Eatermon
+    initializeMoves(learnset) {
+        if (!learnset) return;
+
+        let allAvailableMoves = [];
+
+        for (let unlockLevel in learnset) {
+            if (this.level >= parseInt(unlockLevel)) {
+                let movesAtThisLevel = learnset[unlockLevel];
+
+                if (!Array.isArray(movesAtThisLevel)) {
+                    movesAtThisLevel = [movesAtThisLevel];
+                }
+
+                movesAtThisLevel.forEach(moveId => {
+                    // Prevent duplicates
+                    if (!allAvailableMoves.includes(moveId)) {
+                        allAvailableMoves.push(moveId);
+                    }
+                });
+            }
+        }
+
+        // Grab only the last 4 moves from the array
+        let finalFourMoves = allAvailableMoves.slice(-4);
+
+        // Save them to the Eatermon
+        finalFourMoves.forEach(moveId => {
+            // Also make sure the attack actually exists in your dictionary so it doesn't crash!
+            if (attacksData[moveId]) {
+                this.moves.push({ id: moveId, ...attacksData[moveId] });
+            } else {
+                console.warn(`Attack "${moveId}" is missing from attacksData!`);
+            }
+        });
+    }
+
+    levelUp(data) {
         this.level++;
         this.hp += 5;
-        this.maxHP += 5;  
+        this.maxHP += 5;
         this.attack += 2;
+
+        // --- Check for newly unlocked moves ---
+        if (data.learnset && data.learnset[this.level]) {
+            let newMoves = data.learnset[this.level];
+
+            newMoves.forEach(moveId => {
+                if (this.moves.length < 4) {
+                    // We have room! Learn it instantly.
+                    console.log(`${this.name} learned ${attacksData[moveId].name}!`);
+                    this.moves.push({ id: moveId, ...attacksData[moveId] });
+                } else {
+                    // Uh oh, we have 4 moves already!
+                    console.log(`${this.name} wants to learn ${attacksData[moveId].name}, but already knows 4 moves!`);
+
+                    // Here is where you will eventually call your UI function!
+                    // promptForgetMoveUI(this, moveId);
+                }
+            });
+        }
     }
 }
+
+const attacksData = {
+    "scratch": { name: "Scratch", power: 10, accuracy: 100, type: "Normal" },
+    "leaf_slap": { name: "Leaf Slap", power: 15, accuracy: 95, type: "Grass" },
+    "sugar_rush": { name: "Sugar Rush", power: 12, accuracy: 100, type: "Sweet" },
+};
 
 const eatermonData = [
     { id: "allahdoodle", name: "Allahdoodle", baseHP: 20, baseAttack: 5, maxHP: 20 },
@@ -49,7 +115,7 @@ const eatermonData = [
     { id: "tomaloudle", name: "Tomaloudle", baseHP: 20, baseAttack: 5, maxHP: 20 },
     { id: "voladorio", name: "Voladorio", baseHP: 20, baseAttack: 5, maxHP: 20 },
     { id: "waffitoff", name: "WaffItOff", baseHP: 20, baseAttack: 5, maxHP: 20 },
-    { id: "woodle", name: "Woodle", baseHP: 20, baseAttack: 5, maxHP: 20 },
+    { id: "woodle", name: "Woodle", baseHP: 20, baseAttack: 5, maxHP: 20, learnset: { 1: ["scratch"] } },
     { id: "leafle", name: "Leafle", baseHP: 20, baseAttack: 5, maxHP: 20 },
     { id: "wrapascal", name: "Wrapascal", baseHP: 100, baseAttack: 5, maxHP: 100 },
     // { id: "", name: "", baseHP: 20, baseAttack: 5, maxHP: 20 },
