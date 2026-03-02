@@ -312,3 +312,49 @@
     font-size: 30px;
     border-radius: 20px;
 }
+
+@keyframes battleFlash {
+    0%   { opacity: 0; background-color: white; }
+    15%  { opacity: 1; }
+    30%  { opacity: 0; }
+    45%  { opacity: 1; }
+    60%  { opacity: 0; background-color: black; }
+    100% { opacity: 1; background-color: black; }
+}
+
+.flash-active {
+    /* The !important forces it to ignore your normal door-fade transition */
+    opacity: 1 !important; 
+    animation: battleFlash 1.5s forwards;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* The animation that rapidly cycles between normal and solid white */
+@keyframes blinkWhite {
+    0%   { filter: brightness(1); }
+    25%  { filter: brightness(0) invert(1); }
+    50%  { filter: brightness(1); }
+    75%  { filter: brightness(0) invert(1); }
+    100% { filter: brightness(1); }
+}
+
+/* We will add this class using JavaScript right when they get hit */
+.damage-blink {
+    animation: blinkWhite 0.4s ease-in-out;
+}
+
+/* The violent shaking animation */
+@keyframes battleShake {
+    0%   { margin-left: 0px; margin-top: 0px; }
+    20%  { margin-left: -15px; margin-top: 10px; }
+    40%  { margin-left: 15px; margin-top: -10px; }
+    60%  { margin-left: -15px; margin-top: -10px; }
+    80%  { margin-left: 15px; margin-top: 10px; }
+    100% { margin-left: 0px; margin-top: 0px; }
+}
+
+/* We attach this to the whole battle menu! */
+.shake-active {
+    animation: battleShake 0.4s ease-in-out;
+}

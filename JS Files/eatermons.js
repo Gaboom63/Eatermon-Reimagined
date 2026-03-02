@@ -1,10 +1,16 @@
 class Eatermon {
     constructor(data, startingLevel = 1) {
         this.name = data.name;
-        this.level = startingLevel; // Allow spawning at higher levels
+        this.level = startingLevel; 
         this.hp = data.baseHP;
         this.maxHP = data.maxHP;
         this.attack = data.baseAttack;
+        
+        // --- THE MISSING STATS (With built-in safety nets!) ---
+        this.type = data.type || "Normal";    // If no type is set, it defaults to Normal
+        this.defense = data.baseDefense || 5; // If no defense is set, it defaults to 5
+        this.speed = data.baseSpeed || 10;    // If no speed is set, it defaults to 10
+
         this.moves = [];
 
         // --- Setup moves for wild encounters ---
@@ -53,6 +59,8 @@ class Eatermon {
         this.hp += 5;
         this.maxHP += 5;
         this.attack += 2;
+        this.defense += 2; // Make sure defense grows too!
+        this.speed += 2;   // Make sure speed grows too!
 
         // --- Check for newly unlocked moves ---
         if (data.learnset && data.learnset[this.level]) {
@@ -79,10 +87,34 @@ const attacksData = {
     "scratch": { name: "Scratch", power: 10, accuracy: 100, type: "Normal" },
     "leaf_slap": { name: "Leaf Slap", power: 15, accuracy: 95, type: "Grass" },
     "sugar_rush": { name: "Sugar Rush", power: 12, accuracy: 100, type: "Sweet" },
+    "debug_killer": {name: "Debug Killer", power: 10000, accuracy: 100, type: "Fire"}
+};
+
+const typeChart = {
+    "Normal": {
+        "Rock": 0.5,
+        "Ghost": 0.0 // Immune!
+    },
+    "Fire": {
+        "Grass": 2.0, // Super Effective!
+        "Water": 0.5, // Not very effective...
+        "Fire": 0.5
+    },
+    "Water": {
+        "Fire": 2.0,
+        "Grass": 0.5,
+        "Water": 0.5
+    },
+    "Grass": {
+        "Water": 2.0,
+        "Fire": 0.5,
+        "Grass": 0.5
+    }
+    // You can easily add "Spicy", "Sweet", or "Sour" here later!
 };
 
 const eatermonData = [
-    { id: "allahdoodle", name: "Allahdoodle", baseHP: 20, baseAttack: 5, maxHP: 20 },
+    { id: "allahdoodle", name: "Allahdoodle", baseHP: 20, baseAttack: 5, maxHP: 20,  },
     { id: "bagoh", name: "BagOh", baseHP: 20, baseAttack: 5, maxHP: 20 },
     { id: "banblast", name: "Ban Blast", baseHP: 20, baseAttack: 5, maxHP: 20 },
     { id: "bannano", name: "Bannano", baseHP: 20, baseAttack: 5, maxHP: 20 },
@@ -115,9 +147,9 @@ const eatermonData = [
     { id: "tomaloudle", name: "Tomaloudle", baseHP: 20, baseAttack: 5, maxHP: 20 },
     { id: "voladorio", name: "Voladorio", baseHP: 20, baseAttack: 5, maxHP: 20 },
     { id: "waffitoff", name: "WaffItOff", baseHP: 20, baseAttack: 5, maxHP: 20 },
-    { id: "woodle", name: "Woodle", baseHP: 20, baseAttack: 5, maxHP: 20, learnset: { 1: ["scratch"] } },
+    { id: "woodle", name: "Woodle", type: "Grass", baseHP: 20, baseAttack: 5, maxHP: 20, baseSpeed: 5, learnset: { 1: ["scratch"] } },
     { id: "leafle", name: "Leafle", baseHP: 20, baseAttack: 5, maxHP: 20 },
-    { id: "wrapascal", name: "Wrapascal", baseHP: 100, baseAttack: 5, maxHP: 100 },
+    { id: "wrapascal", name: "Wrapascal", type: "Grass", baseHP: 100, baseAttack: 5, maxHP: 100, baseSpeed: 10, learnset: { 1: ["debug_killer"] }  },
     // { id: "", name: "", baseHP: 20, baseAttack: 5, maxHP: 20 },
 ];
 
