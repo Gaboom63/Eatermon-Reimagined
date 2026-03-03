@@ -7,12 +7,13 @@ let attackMenuContainer = document.getElementById('attackMenuContainer');
 let routeOne = [ // This is PURELY For example / testing and WILL be removed. 
     createEatermon('woodle'),
     createEatermon('tomadoodle'),
-    createEatermon('pastmala')
+    createEatermon('pastamala')
 ];
 
 let playerTeam = [
     createEatermon('wrapascal'),
-    createEatermon('woodle')
+    createEatermon('woodle'),
+    createEatermon('terminanna')
 ];
 
 let battleParty = [...playerTeam];
